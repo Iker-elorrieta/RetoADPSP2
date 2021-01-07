@@ -45,14 +45,14 @@ public class GestorFicheros extends Thread {
 		switch(tipo) {
 		
 		case 2:
-			insertarProvincias();
+			
 			procesarJson();
-			transformarJsonPOJOMunicipio(fichero.getAbsolutePath());
+			
 			break;
 	
 		case 3:
 			procesarJson();
-			transformarJsonPOJOEspacio(fichero.getAbsolutePath());
+			
 			break;
 		}
 	}
@@ -157,20 +157,7 @@ public class GestorFicheros extends Thread {
 		return false;
 	}
 	
-	public boolean insertarProvincias() {
-
-		Provincia bizkaia = new Provincia(48);
-		Provincia gipuzkoa = new Provincia(20);
-		Provincia araba = new Provincia(1);
-
-		ProvinciaDAO.iniciarSesion();
-		ProvinciaDAO.insertarRegistro(bizkaia);
-		ProvinciaDAO.insertarRegistro(gipuzkoa);
-		ProvinciaDAO.insertarRegistro(araba);
-
-		return false;
-
-	}
+	
 	
 	// CLASE MUNICIPIOS *
 	public String remplazoMunicipios(String linea) {
@@ -323,12 +310,6 @@ public class GestorFicheros extends Thread {
 
 	 
 	
-
-	 
-	 
-	 
-	 
-	 
 	 
 	 
 	 
@@ -344,6 +325,8 @@ public class GestorFicheros extends Thread {
 	 * @return true
 	 */
 	public boolean procesarElementoJson(JsonElement elemento) {
+		Municipio municipio = new Municipio();
+		Map.Entry<String, JsonElement> entrada1 = null;
 		if (elemento.isJsonObject()) {
 			
 			System.out.println("  (Objeto)");
@@ -352,10 +335,10 @@ public class GestorFicheros extends Thread {
 			Iterator<Map.Entry<String, JsonElement>> iter = entradas.iterator();
 			
 			while (iter.hasNext()) {
-				Map.Entry<String, JsonElement> entrada = iter.next();
-				System.out.println("#CLAVE:\n  " + entrada.getKey());
+				entrada1 = iter.next();
+				System.out.println("#CLAVE:\n  " + entrada1.getKey());
 				System.out.println("$VALOR:");
-				procesarElementoJson(entrada.getValue());
+				procesarElementoJson(entrada1.getValue());
 			}
 		} 
 		else if (elemento.isJsonArray()) {
@@ -369,6 +352,7 @@ public class GestorFicheros extends Thread {
 			}
 		} 
 		else if (elemento.isJsonPrimitive()) {
+			
 			System.out.print("  (Primitiva) ");
 			JsonPrimitive valor = elemento.getAsJsonPrimitive();
 			if (valor.isBoolean()) {
@@ -378,8 +362,16 @@ public class GestorFicheros extends Thread {
 				System.out.println("  Numero => " + valor.getAsNumber());
 			} 
 			else if (valor.isString()) {
+				
 				System.out.println("  String => " + valor.getAsString());
+				
+				if (entrada1.getKey().equals("Nombre")) {
+				
+					municipio.setNombre((String)valor.toString());
+				}
 			}
+			
+			
 			System.out.println();
 		} 
 		else if (elemento.isJsonNull()) {

@@ -34,11 +34,11 @@ public class Updater {
 	public boolean actualizarFuentes() {
 //		GestorFicheros gfIndex = new GestorFicheros(new File(DATOS_INDEX), 1);
 		GestorFicheros gfMunicipios = new GestorFicheros(new File(DATOS_PUEBLOS), 2);
-		GestorFicheros gfEspNat = new GestorFicheros(new File(DATOS_ESPACIOS_NAT), 3);
+	//GestorFicheros gfEspNat = new GestorFicheros(new File(DATOS_ESPACIOS_NAT), 3);
 //		GestorFicheros gfEstaciones = new GestorFicheros(new File(DATOS_ESTACIONES), 4);
 //		gfIndex.start();
 		gfMunicipios.start();
-		gfEspNat.start();
+		//gfEspNat.start();
 //		gfEstaciones.start();
 
 		return true;	

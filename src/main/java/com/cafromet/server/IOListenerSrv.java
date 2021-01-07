@@ -72,13 +72,17 @@ public class IOListenerSrv extends Thread {
 			String usuario = array[0];
 			String passwd = array[1];
 			Cliente cliente = new Cliente(usuario,passwd);
+			Cliente clienteComprobacion = new Cliente();
 			boolean existe;
 			System.out.println(cliente.getUsuario());
 			ClienteDAO.iniciarSesion();
-			if(ClienteDAO.consultarRegistro(cliente.getUsuario()) != null){
-				System.out.println("EXISTE");
-				existe = true;
-				datos.setObjeto(existe);
+			clienteComprobacion = ClienteDAO.consultarRegistro(cliente.getUsuario());
+			if (clienteComprobacion != null) {
+				if (cliente.getPasswd().equals(clienteComprobacion.getPasswd())) {
+					existe = true;
+					datos.setObjeto(existe);
+				}
+	
 			}else {
 				System.out.println("NO EXISTE");
 				existe = false;

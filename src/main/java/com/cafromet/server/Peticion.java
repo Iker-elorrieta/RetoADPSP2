@@ -1,7 +1,10 @@
 package com.cafromet.server;
 
 enum Peticion{
-	p101(1, "select * from clientes;");
+	p101(1, "select * from clientes;"),
+	p102(2, "* from municipios;");
+	
+	
 	
 
 	Peticion(int codigo, String consulta) {
