@@ -40,10 +40,22 @@ public class Updater {
 		return Holder.INSTANCE;
 	}
 	
+<<<<<<< HEAD
 	
 	public boolean comprobarActualizaciones() {
 		FuenteDAO.iniciarSesion();
 		System.out.println("\n >> COMPROBANDO ACTUALIZACIONES...");
+=======
+	public boolean actualizarFuentes() {
+//		GestorFicheros gfIndex = new GestorFicheros(new File(DATOS_INDEX), 1);
+		GestorFicheros gfMunicipios = new GestorFicheros(new File(DATOS_PUEBLOS), 2);
+	//GestorFicheros gfEspNat = new GestorFicheros(new File(DATOS_ESPACIOS_NAT), 3);
+//		GestorFicheros gfEstaciones = new GestorFicheros(new File(DATOS_ESTACIONES), 4);
+//		gfIndex.start();
+		gfMunicipios.start();
+		//gfEspNat.start();
+//		gfEstaciones.start();
+>>>>>>> branch 'Desarrollo' of https://github.com/Iker-elorrieta/RetoADPSP2.git
 
 		//ACTUALIZACION INDEX
 

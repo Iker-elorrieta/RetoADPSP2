@@ -79,12 +79,17 @@ public class IOListenerSrv extends Thread {
 			
 			String usuario = array[0];
 			String passwd = array[1];
+<<<<<<< HEAD
 			Cliente cliente = new Cliente(usuario, passwd);
+=======
+			Cliente cliente = new Cliente(usuario,passwd);
+>>>>>>> branch 'Desarrollo' of https://github.com/Iker-elorrieta/RetoADPSP2.git
 			Cliente clienteComprobacion = new Cliente();
 			boolean existe;
 			System.out.println(cliente.getUsuario());
 			ClienteDAO.iniciarSesion();
 			clienteComprobacion = ClienteDAO.consultarRegistro(cliente.getUsuario());
+<<<<<<< HEAD
 
 			if (clienteComprobacion != null) {
 				if (cliente.getPasswd().equals(clienteComprobacion.getPasswd())) {
@@ -94,6 +99,15 @@ public class IOListenerSrv extends Thread {
 				}
 
 			} else {
+=======
+			if (clienteComprobacion != null) {
+				if (cliente.getPasswd().equals(clienteComprobacion.getPasswd())) {
+					existe = true;
+					datos.setObjeto(existe);
+				}
+	
+			}else {
+>>>>>>> branch 'Desarrollo' of https://github.com/Iker-elorrieta/RetoADPSP2.git
 				System.out.println("NO EXISTE");
 				existe = false;
 				datos.setObjeto(existe);
