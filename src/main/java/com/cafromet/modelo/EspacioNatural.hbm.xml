@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generated 27 dic. 2020 22:44:50 by Hibernate Tools 5.4.21.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 20 ene. 2021 17:05:38 by Hibernate Tools 5.4.21.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
     <class catalog="cafrometbbdd" dynamic-insert="false" dynamic-update="false" mutable="true" name="com.cafromet.modelo.EspacioNatural" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="espacios_naturales">
-        <id name="idEspacio" type="int">
+        <id name="idEspacio" type="java.lang.Integer">
             <column name="ID_ESPACIO"/>
-            <generator class="assigned"/>
+            <generator class="identity"/>
         </id>
         <property generated="never" lazy="false" name="nombre" optimistic-lock="true" type="string" unique="false">
             <column length="50" name="NOMBRE"/>
         </property>
         <property generated="never" lazy="false" name="descripcion" optimistic-lock="true" type="string" unique="false">
-            <column length="2000" name="DESCRIPCION"/>
+            <column length="5000" name="DESCRIPCION"/>
         </property>
         <property generated="never" lazy="false" name="tipo" optimistic-lock="true" type="string" unique="false">
             <column length="50" name="TIPO"/>
         </property>
-        <property generated="never" lazy="false" name="direccion" optimistic-lock="true" type="string" unique="false">
-            <column length="50" name="DIRECCION"/>
-        </property>
         <property generated="never" lazy="false" name="categoria" optimistic-lock="true" type="string" unique="false">
             <column length="50" name="CATEGORIA"/>
         </property>
-        <property generated="never" lazy="false" name="latitud" optimistic-lock="true" type="java.lang.Float" unique="false">
-            <column name="LATITUD" precision="20" scale="20"/>
+        <property generated="never" lazy="false" name="latitud" optimistic-lock="true" type="java.lang.Double" unique="false">
+            <column name="LATITUD" precision="20" scale="16"/>
         </property>
-        <property generated="never" lazy="false" name="longitud" optimistic-lock="true" type="java.lang.Float" unique="false">
-            <column name="LONGITUD" precision="20" scale="20"/>
+        <property generated="never" lazy="false" name="longitud" optimistic-lock="true" type="java.lang.Double" unique="false">
+            <column name="LONGITUD" precision="20" scale="16"/>
         </property>
         <set embed-xml="true" fetch="select" inverse="true" lazy="true" mutable="true" name="municipio_EspacioNaturals" optimistic-lock="true" sort="unsorted" table="municipios_espacios_nat">
             <key on-delete="noaction">
