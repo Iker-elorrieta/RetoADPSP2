@@ -53,6 +53,14 @@ public class MunicipioDAO {
 		return municipio;
 	}
 	
+	public static Municipio consultarRegistro(int idMunicipio) {
+		HQL = "from Municipio as mun where mun.idMunicipio = :idMunicipio ";
+		QUERY = SESSION.createQuery(HQL);
+		QUERY.setParameter("idMunicipio", idMunicipio);
+		Municipio municipio = (Municipio) QUERY.uniqueResult(); 
+		return municipio;		
+	}
+	
 	public static Municipio consultarRegistro(int codMunicipio, int idProvincia) {
 		HQL = "from Municipio as mun where mun.codMunicipio = :codMunicipio and mun.provincia.idProvincia = :idProvincia";
 		QUERY = SESSION.createQuery(HQL);
@@ -72,15 +80,13 @@ public class MunicipioDAO {
 	}
 	
 	public static List<Municipio> consultarRegistros() {
-        SESSION.beginTransaction();
         String hql = "from Municipio";
-        Query q = SESSION.createQuery(hql);
-        List<Municipio> filasMuni = q.list();
-        SESSION.getTransaction().commit();
-
+        QUERY = SESSION.createQuery(hql);
+        List<Municipio> filasMuni = QUERY.list();
         return filasMuni;
     }
 
+	
 	public static boolean borrarRegistro(String nombre) {
 		boolean correcto = false;
 		SESSION.beginTransaction();	
@@ -94,11 +100,5 @@ public class MunicipioDAO {
 		correcto = true;
 		return correcto;
 	}
-	public static Municipio consultarMuni(int idMunicipio) {
-		HQL = "from Municipio as mun where mun.idMunicipio = :idMunicipio ";
-		QUERY = SESSION.createQuery(HQL);
-		QUERY.setParameter("idMunicipio", idMunicipio);
-		Municipio municipio = (Municipio) QUERY.uniqueResult(); 
-		return municipio;		
-	}
+
 }

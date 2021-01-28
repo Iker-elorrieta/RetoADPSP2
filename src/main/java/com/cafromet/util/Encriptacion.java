@@ -38,13 +38,10 @@ public class Encriptacion {
 			claveSecreta = skf.generateSecret(clavEspec);
 
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -70,7 +67,6 @@ public class Encriptacion {
 
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
 				| BadPaddingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
@@ -97,11 +93,9 @@ public class Encriptacion {
 
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
 					| InvalidAlgorithmParameterException | IllegalBlockSizeException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 		
 		return mensajeDecodificado;
@@ -121,7 +115,7 @@ public class Encriptacion {
 			oos.close();
 
 			System.out.println(
-					"\nSe han guardado " + mensajeCodificado.length + " bytes en el fichero " + fichero.getName());
+					"\n Se han guardado " + mensajeCodificado.length + " bytes en el fichero " + fichero.getName());
 
 		} catch (FileNotFoundException fn) {
 			System.out.println("\n !ERROR => No se encuentra el fichero");
@@ -153,7 +147,6 @@ public class Encriptacion {
 		} catch (IOException io) {
 			System.out.println("\n !ERROR => IOException ");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return bytes;

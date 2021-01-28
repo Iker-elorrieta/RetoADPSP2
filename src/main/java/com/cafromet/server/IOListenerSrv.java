@@ -223,7 +223,7 @@ public class IOListenerSrv extends Thread {
 			case 2:
 				Municipio muni = new Municipio();
 				String idmuni = datos.getContenido();
-				muni = MunicipioDAO.consultarMuni(Integer.valueOf(idmuni));
+				muni = MunicipioDAO.consultarRegistro(Integer.valueOf(idmuni));
 				MunicipioDTO muniDTO = new MunicipioDTO(muni);				
 				datos.setObjeto(muniDTO);
 				break;

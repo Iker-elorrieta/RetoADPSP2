@@ -49,12 +49,11 @@ public class EspacioNaturalDAO {
 		EspacioNatural espacio = (EspacioNatural) QUERY.uniqueResult(); 
 		return espacio;
 	}
+	
 	public static List<EspacioNatural> consultarRegistros() {
-		SESSION.beginTransaction();
 		HQL = "from EspacioNatural";
-		Query q = SESSION.createQuery(HQL);
-		List<EspacioNatural> espacioNatural = q.list(); 
-		SESSION.getTransaction().commit();
+		QUERY = SESSION.createQuery(HQL);
+		List<EspacioNatural> espacioNatural = QUERY.list(); 
         return espacioNatural;
 	}
 	
@@ -66,7 +65,7 @@ public class EspacioNaturalDAO {
 		EspacioNatural espacioNat =  (EspacioNatural) QUERY.uniqueResult(); 
 		SESSION.delete(espacioNat);		
 		SESSION.getTransaction().commit();
-		System.out.println("\n >> REGISTRO BORRADO\n");
+		System.out.println("\n >> REGISTRO BORRADO");
 		return true;
 	}
 }
