@@ -1,10 +1,12 @@
 package com.cafromet.modelodao;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import com.cafromet.modelo.EspacioNatural;
 import com.cafromet.modelo.Medicion;
 import com.cafromet.modelo.MedicionId;
 import com.cafromet.util.HibernateUtil;
@@ -37,6 +39,7 @@ public class MedicionDAO {
 		if(duplicado(medicion)) {
 			return false;
 		}
+
 		SESSION.beginTransaction();		
 		SESSION.save(medicion);
 		SESSION.getTransaction().commit();	
@@ -54,4 +57,20 @@ public class MedicionDAO {
 		Medicion medicion2 =  (Medicion) QUERY.uniqueResult(); 
         return medicion2;
 	}
+	
+	public static List<Medicion> consultarRegistros(int idCentro) {
+		HQL = "from Medicion where centroMeteorologico.idCentroMet = :idCentro";
+		QUERY = SESSION.createQuery(HQL);
+		QUERY.setParameter("idCentro", idCentro);
+		List<Medicion> mediciones = QUERY.list(); 
+        return mediciones;
+	}
+	
+	public static List<Medicion> consultarRegistros() {
+		HQL = "from Medicion";
+		QUERY = SESSION.createQuery(HQL);
+		List<Medicion> mediciones = QUERY.list(); 
+        return mediciones;
+	}
+	
 }

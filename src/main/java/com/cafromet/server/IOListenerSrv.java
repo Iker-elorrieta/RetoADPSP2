@@ -1,4 +1,5 @@
 package com.cafromet.server;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,13 +10,20 @@ import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import com.cafromet.modelo.CentroMeteorologico;
 import com.cafromet.modelo.Cliente;
+import com.cafromet.modelo.EspacioNatural;
+import com.cafromet.modelo.Medicion;
 import com.cafromet.modelo.Municipio;
+import com.cafromet.modelodao.CentroMeteorologicoDAO;
 import com.cafromet.modelodao.ClienteDAO;
+import com.cafromet.modelodao.EspacioNaturalDAO;
+import com.cafromet.modelodao.MedicionDAO;
 import com.cafromet.modelodao.MunicipioDAO;
+import com.cafromet.modelodto.CentroMeteorologicoDTO;
 import com.cafromet.modelodto.ClienteDTO;
+import com.cafromet.modelodto.EspacioNaturalDTO;
 import com.cafromet.modelodto.MunicipioDTO;
-
 
 public class IOListenerSrv extends Thread {
 	protected static int ID_CLIENTE = 0;
@@ -27,7 +35,6 @@ public class IOListenerSrv extends Thread {
 	private ObjectOutputStream osalida = null;
 	private ObjectInputStream oentrada = null;
 	private Datos datos;
-	
 
 	public IOListenerSrv(Socket cliente, JTextArea textArea, JTextField texto) throws IOException {
 		ID_CLIENTE++;
@@ -46,9 +53,9 @@ public class IOListenerSrv extends Thread {
 
 		try {
 			datos = (Datos) oentrada.readObject();
-			
+
 			textArea.append(" Conexion => " + idConexion + " || Peticion => " + datos.getPeticion() + "\n");
-			
+
 			procesarPeticion();
 
 			osalida.writeObject(datos);
@@ -63,24 +70,22 @@ public class IOListenerSrv extends Thread {
 			GestorConexiones.getInstance().cerrarConexion(idConexion);
 		}
 
-		
 		textoF.setText("Numero de consultas realizadas (sesion actual): " + NUM_CONSULTAS);
 		System.out.println(" #CONEXION " + idConexion + " -> Desconectado\n");
-		
+
 	}
 
 	public synchronized boolean procesarPeticion() {
-		MunicipioDAO.iniciarSesion();
-		switch (datos.getPeticion().getCodigo()) {	
-		case 1: 
+		switch (datos.getPeticion().getCodigo()) {
+		case 1:
+			ClienteDAO.iniciarSesion();
 			String[] array = datos.getContenido().split(",");
-			
+
 			String usuario = array[0];
 			String passwd = array[1];
-			Cliente cliente = new Cliente(usuario, passwd);
+			Cliente cliente = new Cliente(usuario, passwd, null, null);
 			Cliente clienteComprobacion = new Cliente();
 			boolean existe;
-			ClienteDAO.iniciarSesion();
 			clienteComprobacion = ClienteDAO.consultarRegistro(cliente.getUsuario());
 
 			if (clienteComprobacion != null) {
@@ -89,7 +94,6 @@ public class IOListenerSrv extends Thread {
 					datos.setObjeto(existe);
 					datos.setContenido("Este es el usuario");
 				}
-
 			} else {
 				System.out.println("\n EL USUARIO NO EXISTE");
 				existe = false;
@@ -97,28 +101,39 @@ public class IOListenerSrv extends Thread {
 			}
 			ClienteDAO.cerrarSesion();
 			break;
-
-		case 2:		
-			ClienteDTO clienteDto = (ClienteDTO) datos.getObjeto();
-			Cliente cliente1 = new Cliente();
-			cliente1.setUsuario(clienteDto.getUsuario());
-			cliente1.setPasswd(clienteDto.getPasswd());
-			System.out.println("\n RECEPCION SERVER => Cliente: " + cliente1.getUsuario() + "; Password: " + cliente1.getPasswd());
+		
+		case 2:
 			ClienteDAO.iniciarSesion();
-			datos.setObjeto(ClienteDAO.insertarRegistro(cliente1));
+			switch (datos.getPeticion().getPlataforma()) {
+			case 1:
+				Cliente cliente2 = (Cliente) datos.getObjeto();
+				System.out.println("\n RECEPCION SERVER => Cliente: " + cliente2.getUsuario() + "; Password: "
+						+ cliente2.getPasswd());
+				datos.setObjeto(ClienteDAO.insertarRegistro(cliente2));
+				break;
+			case 2:
+				ClienteDTO clienteDto = (ClienteDTO) datos.getObjeto();
+				Cliente cliente1 = new Cliente();
+				cliente1.setUsuario(clienteDto.getUsuario());
+				cliente1.setPasswd(clienteDto.getPasswd());
+				System.out.println("\n RECEPCION SERVER => Cliente: " + cliente1.getUsuario() + "; Password: "
+						+ cliente1.getPasswd());
+				datos.setObjeto(ClienteDAO.insertarRegistro(cliente1));
+
+				break;
+			}
 			ClienteDAO.cerrarSesion();
 			break;
-
 		case 3:
-			List<Municipio> lista =  MunicipioDAO.consultarRegistros();
-			switch(datos.getPeticion().getPlataforma()) {
+			MunicipioDAO.iniciarSesion();
+			List<Municipio> lista = MunicipioDAO.consultarRegistros();
+			switch (datos.getPeticion().getPlataforma()) {
 			case 1:
 				datos.setObjeto(lista);
 				break;
-			case 2: 
+			case 2:
 				List<MunicipioDTO> listaDTO = new ArrayList<MunicipioDTO>();
-
-				for(Municipio muni : lista) {
+				for (Municipio muni : lista) {
 					MunicipioDTO muniDTO = new MunicipioDTO();
 					muniDTO.setNombre(muni.getNombre());
 					muniDTO.setIdMunicipio(muni.getIdMunicipio());
@@ -127,32 +142,117 @@ public class IOListenerSrv extends Thread {
 				}
 				datos.setObjeto(listaDTO);
 				break;
+			case 3:
+				ArrayList<Municipio> listaMunicipio = new ArrayList<Municipio>();
+				for (Municipio muni : lista) {
+					if (!muni.getCentroMeteorologicos().isEmpty()) {
+						listaMunicipio.add(muni);
+					}
+				}
+				datos.setObjeto(listaMunicipio);
+				break;
 			}
+			MunicipioDAO.iniciarSesion();
 			break;
-	}
-		MunicipioDAO.cerrarSesion();
+		case 4:
+			EspacioNaturalDAO.iniciarSesion();
+			List<EspacioNatural> listaEspNat = EspacioNaturalDAO.consultarRegistros();
+			switch (datos.getPeticion().getPlataforma()) {
+			case 1:
+				datos.setObjeto(listaEspNat);
+				break;
+			case 2:
+				List<EspacioNaturalDTO> listaespaNat = new ArrayList<EspacioNaturalDTO>();
+				for (EspacioNatural espacioNatural : listaEspNat) {
+					EspacioNaturalDTO espaNatDTO = new EspacioNaturalDTO();
+					espaNatDTO.setIdEspacioNatural(espaNatDTO.getIdEspacioNatural());
+					espaNatDTO.setNombre(espaNatDTO.getNombre());
+					espaNatDTO.setCategoria(espacioNatural.getCategoria());
+					espaNatDTO.setDescripcion(espacioNatural.getDescripcion());
+					espaNatDTO.setTipo(espacioNatural.getTipo());
+					listaespaNat.add(espaNatDTO);
+				}
+				break;
+			}
+			EspacioNaturalDAO.cerrarSesion();
+			break;
+		case 5:
+			CentroMeteorologicoDAO.iniciarSesion();
+			List<CentroMeteorologico> listaCentro = CentroMeteorologicoDAO.consultarRegistros();
+			switch (datos.getPeticion().getPlataforma()) {
+			case 1:
+				datos.setObjeto(listaCentro);
+				break;
+			case 2:
+				List<CentroMeteorologicoDTO> listaCentroDTO = new ArrayList<CentroMeteorologicoDTO>();
+				for (CentroMeteorologico centroMet : listaCentro) {
+					CentroMeteorologicoDTO centroDTO = new CentroMeteorologicoDTO();
+					centroDTO.setIdCentroMet(centroMet.getIdCentroMet());
+					centroDTO.setNombre(centroMet.getNombre());
+					listaCentroDTO.add(centroDTO);
+				}
+				datos.setObjeto(listaCentroDTO);
+				break;
+			case 3:
+				List<CentroMeteorologico> listaCentros = CentroMeteorologicoDAO.consultarRegistros(Integer.parseInt((String) datos.getContenido()));
+				datos.setObjeto(listaCentros);
+				break;
+			}
+			CentroMeteorologicoDAO.cerrarSesion();
+			break;
+		case 6:
+		
+			MedicionDAO.iniciarSesion();
+			MunicipioDAO.iniciarSesion();
+			
+			switch (datos.getPeticion().getPlataforma()) {
+
+			case 1:
+				List<Medicion> listaCentros = MedicionDAO.consultarRegistros(Integer.parseInt((String) datos.getContenido()));
+				datos.setObjeto(listaCentros);
+				break;
+			case 2:
+				break;
+			}
+
+			MedicionDAO.iniciarSesion();
+			break;
+		case 7:
+			MunicipioDAO.iniciarSesion();
+			switch (datos.getPeticion().getPlataforma()) {
+			case 2:
+				Municipio muni = new Municipio();
+				String idmuni = datos.getContenido();
+				muni = MunicipioDAO.consultarRegistro(Integer.valueOf(idmuni));
+				MunicipioDTO muniDTO = new MunicipioDTO(muni);				
+				datos.setObjeto(muniDTO);
+				break;
+			}
+			MunicipioDAO.cerrarSesion();
+			break;
+		}
 		return true;
 	}
-	
+
 	public String getIdConexion() {
 		return idConexion;
 	}
-	
+
 	public int getIdCliente() {
 		return ID_CLIENTE;
 	}
-	
+
 	public Socket getSocket() {
 		return cliente;
 	}
 
 	public void cerrarConexion() throws IOException {
 		GestorConexiones.getInstance().cerrarConexion(idConexion);
-		if(oentrada != null)
+		if (oentrada != null)
 			oentrada.close();
-		if(osalida != null)
+		if (osalida != null)
 			osalida.close();
-		if(cliente != null)
+		if (cliente != null)
 			cliente.close();
 	}
 

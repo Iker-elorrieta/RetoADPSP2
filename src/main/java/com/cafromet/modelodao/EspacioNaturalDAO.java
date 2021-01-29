@@ -1,10 +1,11 @@
 package com.cafromet.modelodao;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.cafromet.modelo.EspacioNatural;
-import com.cafromet.modelo.Municipio;
 import com.cafromet.util.HibernateUtil;
 
 @SuppressWarnings("deprecation")
@@ -49,6 +50,13 @@ public class EspacioNaturalDAO {
 		return espacio;
 	}
 	
+	public static List<EspacioNatural> consultarRegistros() {
+		HQL = "from EspacioNatural";
+		QUERY = SESSION.createQuery(HQL);
+		List<EspacioNatural> espacioNatural = QUERY.list(); 
+        return espacioNatural;
+	}
+	
 	public static boolean borrarRegistro(String nombre) {
 		SESSION.beginTransaction();	
 		HQL = "from EspacioNatural where nombre = :nombre";
@@ -57,7 +65,7 @@ public class EspacioNaturalDAO {
 		EspacioNatural espacioNat =  (EspacioNatural) QUERY.uniqueResult(); 
 		SESSION.delete(espacioNat);		
 		SESSION.getTransaction().commit();
-		System.out.println("\n FILA(S) BORRADA(S)\n");
+		System.out.println("\n >> REGISTRO BORRADO");
 		return true;
 	}
 }

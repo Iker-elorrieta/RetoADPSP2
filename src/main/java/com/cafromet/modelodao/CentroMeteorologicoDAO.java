@@ -52,27 +52,34 @@ public class CentroMeteorologicoDAO {
 		CentroMeteorologico centro =  (CentroMeteorologico) QUERY.uniqueResult(); 
         return centro;
 	}
+	
+	public static List<CentroMeteorologico> consultarRegistros(int idMunicipio) {
+		HQL = "from CentroMeteorologico where municipio.idMunicipio = :idMunicipio";
+		QUERY = SESSION.createQuery(HQL);
+		QUERY.setParameter("idMunicipio", idMunicipio);
+		List<CentroMeteorologico> centros = QUERY.list(); 
+        return centros;
+	}
+	
 	public static List<CentroMeteorologico> consultarRegistros() {
-		SESSION.beginTransaction();
 		HQL = "from CentroMeteorologico";
-		Query q = SESSION.createQuery(HQL);
-		List<CentroMeteorologico> centros = q.list(); 
-		SESSION.getTransaction().commit();
+		QUERY = SESSION.createQuery(HQL);
+		List<CentroMeteorologico> centros = QUERY.list(); 
         return centros;
 	}
 	
 	public static boolean actualizarRegistro(CentroMeteorologico centroMeteorologico) {
-		CentroMeteorologico centro = consultarRegistro(centroMeteorologico.getNombre()); 
+		CentroMeteorologico registro = consultarRegistro(centroMeteorologico.getNombre()); 
 		SESSION.beginTransaction();	
-		if(centro!=null) {
-			centro.setUrl(centroMeteorologico.getUrl());
-			centro.setHash(centroMeteorologico.getHash());
-			SESSION.update(centro);
+		if(registro!=null) {
+			registro.setUrl(centroMeteorologico.getUrl());
+			registro.setHash(centroMeteorologico.getHash());
+			SESSION.update(registro);
 			SESSION.getTransaction().commit();
-			System.out.println("\n FILA(S) ACTUALIZADA(S)\n");
+			System.out.println("\n >> REGISTRO ACTUALIZADO");
 			return true;
 		}
-		System.out.println("\n ERROR AL ACTUALIZAR; CLASE => CENTROMETDAO\n");
+		System.out.println("\n !ERROR AL ACTUALIZAR; CLASE => CENTROMETDAO");
 		return false;
 	}
 	
@@ -85,7 +92,7 @@ public class CentroMeteorologicoDAO {
 		CentroMeteorologico centro =  (CentroMeteorologico) QUERY.uniqueResult(); 		
 		SESSION.delete(centro);			
 		SESSION.getTransaction().commit();
-		System.out.println("\n FILA(S) BORRADA(S)\n");
+		System.out.println("\n >> REGISTRO BORRADO");
 		return true;
 	}
 }

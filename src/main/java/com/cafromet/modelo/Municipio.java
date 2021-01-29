@@ -1,5 +1,5 @@
 package com.cafromet.modelo;
-// Generated 20 ene. 2021 17:05:37 by Hibernate Tools 5.4.21.Final
+// Generated 22 ene. 2021 19:54:49 by Hibernate Tools 5.4.21.Final
 
 import java.util.HashSet;
 import java.util.Set;
@@ -85,5 +85,7 @@ public class Municipio implements java.io.Serializable {
 	public void setCentroMeteorologicos(Set centroMeteorologicos) {
 		this.centroMeteorologicos = centroMeteorologicos;
 	}
-
+	
+	@Override
+	public String toString() {return nombre;}
 }

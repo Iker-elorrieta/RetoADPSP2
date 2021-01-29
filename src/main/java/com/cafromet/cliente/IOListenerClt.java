@@ -17,7 +17,7 @@ public class IOListenerClt implements Runnable{
     private ObjectInputStream ois;
 
     private Datos datos;
-    private String ip = "localhost"; 
+    private String ip = "localhost";
 
     public IOListenerClt(Datos datos){
         this.datos = datos;
@@ -47,9 +47,9 @@ public class IOListenerClt implements Runnable{
                 s.close();
 
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+        	System.out.println("\n !ERROR => UNKNOWN HOST EXCEPTION");
         }catch (ConnectException e) {
-        	System.out.println("\n !ERROR => CONNECTEXCEPTION || CONEXION RECHAZADA");
+        	System.out.println("\n !ERROR => CONNECT EXCEPTION");
         }catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
